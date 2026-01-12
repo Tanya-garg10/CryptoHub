@@ -705,6 +705,49 @@
 .blog-back-btn:hover .back-text {
   text-decoration: underline;
 }
+[/* Download buttons */]
+.blog-download-container {
+  display: inline-flex;
+  gap: 0.6rem;
+  margin-left: 1rem;
+}
+
+.blog-download-btn {
+  -webkit-appearance: none;
+  appearance: none;
+  padding: 0.45rem 0.7rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  background: rgba(255, 255, 255, 0.04);
+  color: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  transition: transform 0.12s ease, background 0.12s ease, box-shadow 0.12s ease;
+}
+
+.blog-download-btn:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 8px 18px rgba(2, 6, 23, 0.45);
+}
+
+.blog-download-btn:active { transform: translateY(0); }
+
+.blog-download-btn.blog-download-txt {
+  background: transparent;
+  border: 1px dashed rgba(255,255,255,0.06);
+}
+
+[data-theme="light"] .blog-download-btn {
+  background: rgba(255,255,255,0.96);
+  color: #1e293b;
+  border: 1px solid rgba(148,163,184,0.4);
+}
+
+[data-theme="light"] .blog-download-btn.blog-download-txt {
+  background: transparent;
+}
 [data-theme="light"] .blog-back-btn {
   background: radial-gradient(circle at top left, #1d4ed8, #3b82f6);
   color: white;
@@ -744,8 +787,28 @@
   border-color: #e0e7ff;
 }
 
-[data-theme="light"] .email-input {
-  background: white;
-  border-color: #d1d5db;
-  color: #15171A;
+[data-theme="light"] .blog-back-btn:active {
+  box-shadow:
+    0 10px 24px rgba(59, 130, 246, 0.3),
+    0 0 0 1px rgba(30, 64, 175, 0.6);
+}
+
+/* === TOP RIGHT DOWNLOAD BUTTON POSITION === */
+.blog-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+}
+
+/* === DARK THEME VISIBILITY FIX === */
+.blog-download-top {
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  color: #ffffff;
+  border: 1px solid rgba(59, 130, 246, 0.6);
+  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.45);
+}
+
+.blog-download-top:hover {
+  background: linear-gradient(135deg, #1d4ed8, #2563eb);
 }
