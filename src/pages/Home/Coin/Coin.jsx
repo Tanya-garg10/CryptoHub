@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import "./Coin.css";
 import { CoinContext } from "../../../context/CoinContext";
 import LineChart from "../../../components/LineChart";
+import NewsPanel from "../../../components/NewsPanel";
 
 const Coin = () => {
   const { coinId } = useParams();
@@ -74,6 +75,7 @@ const Coin = () => {
         <div className="coin-chart">
           <LineChart historicaldata={historicaldata} />
         </div>
+        <NewsPanel coinId={coinId} coinName={coindata?.name} />
       </div>
       <div data-aos="fade-left" className="coin-right">
         <div className="coin-info">
