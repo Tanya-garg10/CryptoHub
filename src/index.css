@@ -60,12 +60,8 @@ body {
   background-color: var(--bg-deep);
   color: var(--text-main);
   background:
-    radial-gradient(ellipse at top, #19102c 0%, transparent 40%),
-    /* Top Purple Nebula */
-    radial-gradient(circle at 80% 20%, #0c1827 0%, transparent 30%),
-    /* Right Blue Void */
+    radial-gradient(circle at 50% -10%, rgba(59, 130, 246, 0.3) 0%, transparent 50%),
     #050505;
-  /* Fallback Base */
   min-height: 100vh;
   overflow-x: hidden;
   position: relative;

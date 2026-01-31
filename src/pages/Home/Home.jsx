@@ -1,24 +1,35 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import "./Home.css";
 import { CoinContext } from "../../context/CoinContext";
 import { Link } from "react-router-dom";
-import { FiSearch, FiArrowUpRight, FiArrowDownRight, FiFilter } from "react-icons/fi";
+import { FiSearch, FiArrowUpRight, FiArrowDownRight } from "react-icons/fi";
 import { motion } from "framer-motion";
 import MarketFilters from "../../components/MarketFilters";
-import { Virtuoso } from 'react-virtuoso';
 
 const Home = () => {
   const { allCoin, filteredCoins, currency } = useContext(CoinContext);
   const [displayCoin, setDisplayCoin] = useState([]);
   const [input, setInput] = useState("");
-  // Removed visibleCount state as Virtual Scrolling handles this now
-  const [showFilters, setShowFilters] = useState(false);
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
+  const [visibleCount, setVisibleCount] = useState(50);
+
+  const [searchResults, setSearchResults] = useState([]);
+
+  const marketSectionRef = useRef(null);
+  const observerTarget = useRef(null);
 
   const inputHandler = (e) => {
-    setInput(e.target.value);
-    if (e.target.value === "") setDisplayCoin(filteredCoins);
+    const val = e.target.value;
+    setInput(val);
+    if (val === "") {
+      setDisplayCoin(filteredCoins);
+      setSearchResults([]);
+    } else {
+      const matches = allCoin.filter(coin =>
+        coin.name.toLowerCase().includes(val.toLowerCase()) ||
+        coin.symbol.toLowerCase().includes(val.toLowerCase())
+      ).slice(0, 8);
+      setSearchResults(matches);
+    }
   };
 
   const searchHandler = (e) => {
@@ -29,18 +40,37 @@ const Home = () => {
           item.name.toLowerCase().includes(input.toLowerCase())
         )
       );
+      setSearchResults([]);
+      // AUTO-SCROLL TO RESULTS
+      marketSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else {
       setDisplayCoin(filteredCoins);
     }
   };
 
-  const applyFilters = () => {
-    let filtered = [...filteredCoins];
-    if (minPrice) filtered = filtered.filter((coin) => coin.current_price >= Number(minPrice));
-    if (maxPrice) filtered = filtered.filter((coin) => coin.current_price <= Number(maxPrice));
-    setDisplayCoin(filtered);
-    setShowFilters(false);
+  const loadMore = () => {
+    if (visibleCount < displayCoin.length) {
+      setVisibleCount(prev => prev + 50);
+    }
   };
+
+  // INFINITE SCROLL OBSERVER
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && input === "") {
+          loadMore();
+        }
+      },
+      { threshold: 0.1, rootMargin: '100px' }
+    );
+
+    if (observerTarget.current) {
+      observer.observe(observerTarget.current);
+    }
+
+    return () => observer.disconnect();
+  }, [observerTarget, visibleCount, displayCoin, input]);
 
   useEffect(() => {
     setDisplayCoin(filteredCoins);
@@ -49,168 +79,198 @@ const Home = () => {
   return (
     <div className="home-container">
       {/* -------------------------------------------
-        COSMIC HERO SECTION
+        FINAL REDESIGN HERO SECTION
         -------------------------------------------
       */}
       <section className="cosmic-hero">
         <div className="hero-glow-center"></div>
-        <div className="hero-planet"></div>
 
-        {/* Floating Elements (Orbitals) */}
+        {/* Pill Badge */}
         <motion.div
-          className="orbital-element orb-1 glass-card"
-          animate={{ y: [0, -15, 0], opacity: [0.6, 1, 0.6] }}
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          className="hero-badge"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
         >
-          <span>Bitcoin</span>
-          <span className="text-gradient-cyan" style={{ color: '#00f5ff' }}>+5.2%</span>
+          Start Your Journey with CryptoHub
         </motion.div>
 
-        <motion.div
-          className="orbital-element orb-2 glass-card"
-          animate={{ y: [0, 20, 0], opacity: [0.5, 0.9, 0.5] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-        >
-          <span>Ethereum</span>
-          <span className="text-gradient-cyan" style={{ color: '#00f5ff' }}>+1.5%</span>
-        </motion.div>
-
-        <motion.div
-          className="orbital-element orb-3 glass-card"
-          animate={{ y: [0, 25, 0], x: [0, -10, 0], opacity: [0.4, 0.8, 0.4] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-        >
-          <span>Solana</span>
-          <span className="text-gradient-cyan" style={{ color: '#00f5ff' }}>+8.5%</span>
-        </motion.div>
-
-        <motion.div
-          className="orbital-element orb-4 glass-card"
-          animate={{ y: [0, -20, 0], x: [0, 15, 0], opacity: [0.3, 0.7, 0.3] }}
-          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
-        >
-          <span>Cardano</span>
-          <span style={{ color: '#ff4d6d' }}>-2.1%</span>
-        </motion.div>
-
-        <motion.div
-          className="orbital-element orb-5 glass-card"
-          animate={{ scale: [1, 1.1, 1], opacity: [0.5, 0.9, 0.5] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        >
-          <span>BNB</span>
-          <span className="text-gradient-cyan" style={{ color: '#00f5ff' }}>+1.2%</span>
-        </motion.div>
-
+        {/* Hero Content */}
         <div className="hero-content">
           <motion.h1
             className="hero-title"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8 }}
           >
-            <span className="title-purple">Sailing The Seas Of</span> <br />
-            <span className="title-cyan">Crypto Universe</span>
+            Sailing The Seas Of <br />
+            Crypto Universe
           </motion.h1>
 
           <motion.p
             className="hero-subtitle"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
           >
             Explore real-time data across the blockchain galaxy.
           </motion.p>
 
           <motion.div
             className="search-orbit-container"
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
           >
-            <form className="search-bar-cosmic glass-panel" onSubmit={searchHandler}>
-              <FiSearch className="search-icon" />
-              <input
-                value={input}
-                onChange={inputHandler}
-                list="coinlist"
-                placeholder="Search Tokens..."
-              />
-              <button type="button" className="filter-trigger" onClick={() => setShowFilters(!showFilters)}>
-                <FiFilter />
-              </button>
-            </form>
+            <div className="search-wrapper-professional">
+              <form className="search-bar-cosmic" onSubmit={searchHandler}>
+                <FiSearch style={{ color: 'rgba(255, 255, 255, 0.4)', marginRight: '12px', fontSize: '1.2rem' }} />
+                <input
+                  value={input}
+                  onChange={inputHandler}
+                  placeholder="Search Tokens..."
+                  autoComplete="off"
+                />
+              </form>
 
-            {showFilters && (
-              <motion.div
-                className="cosmic-filters glass-card"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-              >
-                <input type="number" placeholder="Min Price" value={minPrice} onChange={e => setMinPrice(e.target.value)} />
-                <input type="number" placeholder="Max Price" value={maxPrice} onChange={e => setMaxPrice(e.target.value)} />
-                <button className="btn-neon-purple" onClick={applyFilters}>Apply</button>
-              </motion.div>
-            )}
+              {/* Dynamic Results Dropdown */}
+              {searchResults.length > 0 && (
+                <motion.div
+                  className="search-results-dropdown glass-card"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                >
+                  {searchResults.map((coin) => (
+                    <Link
+                      key={coin.id}
+                      to={`/coin/${coin.id}`}
+                      className="dropdown-item"
+                      onClick={() => setSearchResults([])}
+                    >
+                      <div className="item-info">
+                        <img src={coin.image} alt={coin.name} />
+                        <span className="symbol">{coin.symbol.toUpperCase()}</span>
+                        <span className="name">{coin.name}</span>
+                      </div>
+                      <span className="price">{currency.Symbol || currency.symbol}{coin.current_price.toLocaleString()}</span>
+                    </Link>
+                  ))}
+                  <div className="dropdown-footer" onClick={searchHandler}>
+                    View all in Market Overview →
+                  </div>
+                </motion.div>
+              )}
+            </div>
+          </motion.div>
+
+          {/* Top Coins Marquee - Integrated below search */}
+          <div className="top-coins-marquee">
+            <div className="marquee-content">
+              {[...allCoin.slice(0, 10), ...allCoin.slice(0, 10)].map((coin, index) => (
+                <div className="marquee-item" key={index}>
+                  <img src={coin.image} alt={coin.name} />
+                  <span className="marquee-symbol">{coin.symbol.toUpperCase()}</span>
+                  <span className={`marquee-change ${coin.price_change_percentage_24h > 0 ? 'positive' : 'negative'}`}>
+                    {coin.price_change_percentage_24h > 0 ? '+' : ''}{coin.price_change_percentage_24h?.toFixed(2)}%
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Floating Elements (Orbitals) */}
+        <div className="hero-orbitals">
+          <motion.div
+            className="orbital-element glass-card orb-1"
+            whileHover={{ scale: 1.1 }}
+          >
+            Bitcoin <span className="col-change positive">+5.2%</span>
+          </motion.div>
+          <motion.div
+            className="orbital-element glass-card orb-2"
+            whileHover={{ scale: 1.1 }}
+          >
+            Solana <span className="col-change positive">+8.5%</span>
+          </motion.div>
+          <motion.div
+            className="orbital-element glass-card orb-3"
+            whileHover={{ scale: 1.1 }}
+          >
+            Cardano <span className="col-change negative">-2.1%</span>
+          </motion.div>
+          <motion.div
+            className="orbital-element glass-card orb-4"
+            whileHover={{ scale: 1.1 }}
+          >
+            Ethereum <span className="col-change positive">+1.5%</span>
+          </motion.div>
+          <motion.div
+            className="orbital-element glass-card orb-5"
+            whileHover={{ scale: 1.1 }}
+          >
+            BNB <span className="col-change positive">+1.2%</span>
           </motion.div>
         </div>
       </section>
 
       {/* -------------------------------------------
-        MARKET DATA SECTION (Virtualized)
+        MARKET DATA SECTION
         -------------------------------------------
       */}
-      <section className="market-section">
+      <section className="market-section" ref={marketSectionRef}>
         <div className="section-header">
           <h2>Market Overview</h2>
           <div className="market-actions">
             <div className="live-indicator">
-              <span className="dot-pulse"></span>
-              Live Updates
+              <span className="dot-pulse"></span> Live Updates
             </div>
             <MarketFilters />
           </div>
         </div>
 
-        <div className="table-container glass-panel">
+        <div className="table-container">
           <div className="table-header">
-            <div className="col-rank">#</div>
-            <div className="col-name">Asset</div>
-            <div className="col-price">Price</div>
-            <div className="col-change">24h Change</div>
-            <div className="col-mcap">Market Cap</div>
+            <p className="col-rank">#</p>
+            <p className="col-name">Asset</p>
+            <p>Price</p>
+            <p>24h Change</p>
+            <p className="col-mcap">Market Cap</p>
           </div>
-
           <div className="table-body">
             {displayCoin && displayCoin.length > 0 ? (
-              /* VIRTUAL SCROLLER IMPLEMENTATION */
-              <Virtuoso
-                useWindowScroll
-                data={displayCoin}
-                totalCount={displayCoin.length}
-                itemContent={(index, item) => (
-                  <Link to={`/coin/${item.id}`} className="table-row" key={index}>
-                    <div className="col-rank">{item.market_cap_rank}</div>
+              displayCoin.slice(0, visibleCount).map((item, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-20px" }}
+                  transition={{ duration: 0.3, delay: (index % 10) * 0.03 }}
+                >
+                  <Link to={`/coin/${item.id}`} className="table-row">
+                    <p className="col-rank">{item.market_cap_rank}</p>
                     <div className="col-name">
-                      <img src={item.image} alt={item.name} className="coin-icon" />
+                      <img className="coin-icon" src={item.image} alt={item.name} />
                       <div className="coin-info">
-                        <span className="coin-symbol">{item.symbol.toUpperCase()}</span>
-                        <span className="coin-fullname">{item.name}</span>
+                        <p className="coin-symbol">{item.symbol.toUpperCase()}</p>
+                        <p className="coin-fullname">{item.name}</p>
                       </div>
                     </div>
-                    <div className="col-price">
-                      {currency.Symbol || currency.symbol}{item.current_price.toLocaleString()}
-                    </div>
+                    <p className="col-price">
+                      {currency.Symbol || currency.symbol}
+                      {item.current_price.toLocaleString()}
+                    </p>
                     <div className={`col-change ${item.price_change_percentage_24h > 0 ? "positive" : "negative"}`}>
                       {item.price_change_percentage_24h > 0 ? <FiArrowUpRight /> : <FiArrowDownRight />}
-                      {Math.abs(item.price_change_percentage_24h).toFixed(2)}%
+                      {item.price_change_percentage_24h?.toFixed(2)}%
                     </div>
-                    <div className="col-mcap">
-                      {currency.Symbol || currency.symbol}{item.market_cap.toLocaleString()}
-                    </div>
+                    <p className="col-mcap">
+                      {currency.Symbol || currency.symbol}
+                      {item.market_cap.toLocaleString()}
+                    </p>
                   </Link>
-                )}
-              />
+                </motion.div>
+              ))
             ) : (
               <div style={{
                 padding: '40px',
@@ -222,16 +282,19 @@ const Home = () => {
               </div>
             )}
           </div>
-        </div>
-        
-        {/* Load More Button removed because Virtual Scrolling handles infinite lists automatically */}
-      </section>
 
-      <datalist id="coinlist">
-        {allCoin?.map((c, i) => (
-          <option key={i} value={c.name} />
-        ))}
-      </datalist>
+          {/* INFINITE SCROLL SENTINEL */}
+          <div ref={observerTarget} style={{ height: '20px', width: '100%' }}></div>
+        </div>
+
+        {visibleCount < displayCoin.length && (
+          <div className="load-more-container">
+            <button className="btn-load-more" onClick={loadMore}>
+              Load More
+            </button>
+          </div>
+        )}
+      </section>
     </div>
   );
 };

@@ -50,91 +50,38 @@ function Navbar() {
     { to: "/contributors", label: "Contributors" },
   ];
 
-  const authenticatedNavLinks = [
-    ...navLinks,
-    { to: "/dashboard", label: "Dashboard" },
-    { to: "/leaderboard", label: "Leaderboard" },
-  ];
-
   return (
-    <nav className={`navbar ${scrolled ? "scrolled" : ""} ${isMobileMenuOpen ? "has-mobile-menu" : ""} ${isDashboardPage ? "is-dashboard" : ""}`}>
+    <nav className="navbar">
       <div className="navbar-content">
-        {/* Brand/Logo Section */}
+        {/* Brand Left */}
         <Link to="/" className="navbar-logo">
-          <div className="navbar-logo-icon">
-            <img src="/crypto-logo.png" alt="CryptoHub" className="logo-img" />
-          </div>
-          <span className="logo-text">CryptoHub</span>
+          <img src="/favicon.svg" alt="CryptoHub" className="logo-img" />
+          <span>CryptoHub</span>
         </Link>
 
-        {/* Desktop Navigation Menu */}
-        {!isDashboardPage && (
-          <ul className={`navbar-menu ${isMobileMenuOpen ? "active" : ""}`}>
-            {(currentUser ? authenticatedNavLinks : navLinks).map((link) => (
-              <li key={link.to} className="navbar-item">
-                <Link 
-                  to={link.to} 
-                  className={`navbar-link ${location.pathname === link.to ? "active" : ""}`}
-                  onClick={closeMobileMenu}
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
+        {/* Centered Menu */}
+        <ul className="navbar-menu">
+          {navLinks.map((link) => (
+            <li key={link.to} className="navbar-item">
+              <Link
+                to={link.to}
+                className={`navbar-link ${location.pathname === link.to ? "active" : ""}`}
+              >
+                {link.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
 
-        {/* Right Side Actions */}
+        {/* Right Actions */}
         <div className="navbar-actions">
-          {/* Desktop Auth Buttons/User Menu */}
-          <div className="desktop-auth">
-            {currentUser ? (
-              <div className="user-menu">
-                <span className="user-email">{currentUser.email}</span>
-                {isEmailProvider() && (
-                  <Link to="/change-password" className="icon-btn" title="Change Password">
-                    <FiLock />
-                  </Link>
-                )}
-                <button onClick={handleLogout} className="logout-btn">
-                  Logout
-                </button>
-              </div>
-            ) : (
-              <>
-                <Link to="/login" className="navbar-btn navbar-btn-login">
-                  LOGIN
-                </Link>
-                <Link to="/signup" className="navbar-btn navbar-btn-signup">
-                  Get Started
-                </Link>
-              </>
-            )}
-          </div>
-
-          {/* Mobile Menu Toggle */}
-          <button 
-            className={`navbar-toggle ${isMobileMenuOpen ? "active" : ""}`}
-            onClick={toggleMobileMenu}
-            aria-label="Toggle navigation menu"
-          >
-            <span></span>
-            <span></span>
-            <span></span>
-          </button>
+          <Link to="/login" className="btn-login">
+            Login
+          </Link>
+          <Link to="/signup" className="btn-grow">
+            Get Started
+          </Link>
         </div>
-
-        {/* Mobile Auth Buttons (only in mobile menu) */}
-        {isMobileMenuOpen && !currentUser && !isDashboardPage && (
-          <div className="mobile-auth">
-            <Link to="/login" className="navbar-btn navbar-btn-login" onClick={closeMobileMenu}>
-              LOGIN
-            </Link>
-            <Link to="/signup" className="navbar-btn navbar-btn-signup" onClick={closeMobileMenu}>
-              Get Started
-            </Link>
-          </div>
-        )}
       </div>
     </nav>
   );
