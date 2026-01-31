@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import Navbar from "@/components/Navbar";
 import { Routes, Route, useLocation } from "react-router-dom";
 import Home from "@/pages/Home/Home";
@@ -31,7 +31,16 @@ import TermsConditions from "@/pages/TermsConditions.jsx";
 
 const App = () => {
   const { isLoading } = useContext(CoinContext);
+  const [minTimePassed, setMinTimePassed] = useState(false);
   const location = useLocation();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setMinTimePassed(true);
+    }, 2000); // 2 Seconds minimum
+    return () => clearTimeout(timer);
+  }, []);
+
   const isDashboard = location.pathname === "/dashboard" ||
     location.pathname === "/leaderboard" ||
     location.pathname === "/market-overview" ||
@@ -74,8 +83,9 @@ const App = () => {
       <ThemeProvider>
         <AuthProvider>
           <div className="app">
-            {/* Loading Spinner - will show when isLoading is true */}
-            {isLoading && !isDashboard && <LoadingSpinner />}
+            <SplashCursor />
+            {/* Loading Spinner - will show when isLoading is true or minTime hasn't passed */}
+            {(!minTimePassed || isLoading) && !isDashboard && <LoadingSpinner />}
 
             {!isDashboard && <Navbar />}
             <Routes>
@@ -85,7 +95,7 @@ const App = () => {
               {/* Blog detail route supporting both slug and id patterns */}
               <Route path="/blog/:slug" element={<BlogDetail />} />
               <Route path="/blog/article/:id" element={<BlogDetail />} />
-              
+
               <Route path="/features" element={<Features />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/login" element={<Login />} />
@@ -108,7 +118,7 @@ const App = () => {
 
               {/* Coin route - accessible to all but shows sidebar if logged in */}
               <Route path="/coin/:coinId" element={<CoinWrapper />} />
-              
+
               {/* Add 404 Route if you implemented it earlier */}
               {/* <Route path="*" element={<NotFound />} /> */}
 

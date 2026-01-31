@@ -14,7 +14,7 @@ export const CoinContextProvider = (props) => {
   // ---------------------------------------------------------
   // 1. DATA FETCHING (Replaced manual fetch with TanStack Query)
   // ---------------------------------------------------------
-  
+
   const fetchCoinData = async (curr) => {
     const apiKey = import.meta.env.VITE_CG_API_KEY;
     const options = {
@@ -27,14 +27,14 @@ export const CoinContextProvider = (props) => {
     // Add API key if available
     const url = apiKey
       ? `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${curr.name}&x_cg_demo_api_key=${apiKey}`
-      : `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${curr.name}&order=market_cap_desc&per_page=250&page=1&sparkline=false&price_change_percentage=24h`;
+      : `https://api.api.coingecko.com/api/v3/coins/markets?vs_currency=${curr.name}&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=24h`;
 
     const response = await fetch(url, options);
-    
+
     if (!response.ok) {
       throw new Error(`API Error: ${response.status}`);
     }
-    
+
     return response.json();
   };
 
