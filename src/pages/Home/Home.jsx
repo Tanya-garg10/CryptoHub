@@ -16,7 +16,7 @@ const Home = () => {
   const [maxPrice, setMaxPrice] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const coinPerPage = 5;
-  
+
   const totalPages = Math.ceil(displayCoin.length / coinPerPage);
   const paginatedCoins = displayCoin.slice((currentPage - 1) * coinPerPage, currentPage * coinPerPage);
 
@@ -54,14 +54,12 @@ const Home = () => {
 
   return (
     <div className="home-container">
-      {/* -------------------------------------------
-        COSMIC HERO SECTION
-        ------------------------------------------- */}
+      {/* COSMIC HERO SECTION */}
       <section className="cosmic-hero">
         <div className="hero-glow-center"></div>
         <div className="hero-planet"></div>
 
-        {/* Floating Elements */}
+        {/* Floating Elements (Orbitals) */}
         <motion.div className="orbital-element orb-1 glass-card" animate={{ y: [0, -15, 0], opacity: [0.6, 1, 0.6] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}>
           <span>Bitcoin</span> <span style={{ color: '#00f5ff' }}>+5.2%</span>
         </motion.div>
@@ -88,26 +86,16 @@ const Home = () => {
             Explore real-time data across the blockchain galaxy.
           </motion.p>
 
-          <motion.div
-            className="search-orbit-container"
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-          >
+          <motion.div className="search-orbit-container" initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.6, delay: 0.5 }}>
             <form className="search-bar-cosmic glass-panel" onSubmit={searchHandler}>
               <FiSearch className="search-icon" />
-              <input
-                value={input}
-                onChange={inputHandler}
-                list="coinlist"
-                placeholder="Search Tokens..."
-              />
+              <input value={input} onChange={inputHandler} list="coinlist" placeholder="Search Tokens..." />
               <button type="button" className="filter-trigger" onClick={() => setShowFilters(!showFilters)}>
                 <FiFilter />
               </button>
             </form>
-
-            {/* ADDED SEARCH HELPER TEXT HERE */}
+            
+            {/* Added Search Helper Text */}
             <p className="search-helper-text">
               Search by coin name or symbol (e.g., Bitcoin, BTC)
             </p>
@@ -123,9 +111,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* -------------------------------------------
-        MARKET DATA SECTION
-        ------------------------------------------- */}
+      {/* MARKET DATA SECTION */}
       <section className="market-section">
         <div className="section-header">
           <h2>Market Overview</h2>
@@ -162,16 +148,12 @@ const Home = () => {
                         <span className="coin-fullname">{item.name}</span>
                       </div>
                     </div>
-                    <div className="col-price">
-                      {currency.Symbol || currency.symbol}{item.current_price.toLocaleString()}
-                    </div>
+                    <div className="col-price">{currency.Symbol || currency.symbol}{item.current_price.toLocaleString()}</div>
                     <div className={`col-change ${item.price_change_percentage_24h > 0 ? "positive" : "negative"}`}>
                       {item.price_change_percentage_24h > 0 ? <FiArrowUpRight /> : <FiArrowDownRight />}
                       {Math.abs(item.price_change_percentage_24h).toFixed(2)}%
                     </div>
-                    <div className="col-mcap">
-                      {currency.Symbol || currency.symbol}{item.market_cap.toLocaleString()}
-                    </div>
+                    <div className="col-mcap">{currency.Symbol || currency.symbol}{item.market_cap.toLocaleString()}</div>
                   </Link>
                 )}
               />
@@ -183,13 +165,9 @@ const Home = () => {
           </div>
           
           <div className="pagination">
-            <button className="btn-neon-purple" disabled={currentPage === 1} onClick={() => setCurrentPage((p) => p - 1)}>
-              Prev
-            </button>
+            <button className="btn-neon-purple" disabled={currentPage === 1} onClick={() => setCurrentPage((p) => p - 1)}>Prev</button>
             <span>Page {currentPage} / {totalPages}</span>
-            <button className="btn-neon-purple" disabled={currentPage === totalPages || totalPages === 0} onClick={() => setCurrentPage((p) => p + 1)}>
-              Next
-            </button>
+            <button className="btn-neon-purple" disabled={currentPage === totalPages || totalPages === 0} onClick={() => setCurrentPage((p) => p + 1)}>Next</button>
           </div>
         </div>
       </section>
