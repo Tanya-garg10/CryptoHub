@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import { FiSearch, FiArrowUpRight, FiArrowDownRight, FiFilter } from "react-icons/fi";
 import { motion } from "framer-motion";
 import MarketFilters from "../../components/MarketFilters";
-import { Virtuoso } from 'react-virtuoso';
 
 const Home = () => {
   const { allCoin, filteredCoins, currency } = useContext(CoinContext);
@@ -45,6 +44,7 @@ const Home = () => {
     if (maxPrice) filtered = filtered.filter((coin) => coin.current_price <= Number(maxPrice));
     setDisplayCoin(filtered);
     setShowFilters(false);
+    setCurrentPage(1);
   };
 
   useEffect(() => {
@@ -54,28 +54,8 @@ const Home = () => {
 
   return (
     <div className="home-container">
-      {/* COSMIC HERO SECTION */}
+      {/* HERO SECTION */}
       <section className="cosmic-hero">
-        <div className="hero-glow-center"></div>
-        <div className="hero-planet"></div>
-
-        {/* Floating Elements (Orbitals) */}
-        <motion.div className="orbital-element orb-1 glass-card" animate={{ y: [0, -15, 0], opacity: [0.6, 1, 0.6] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}>
-          <span>Bitcoin</span> <span style={{ color: '#00f5ff' }}>+5.2%</span>
-        </motion.div>
-        <motion.div className="orbital-element orb-2 glass-card" animate={{ y: [0, 20, 0], opacity: [0.5, 0.9, 0.5] }} transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}>
-          <span>Ethereum</span> <span style={{ color: '#00f5ff' }}>+1.5%</span>
-        </motion.div>
-        <motion.div className="orbital-element orb-3 glass-card" animate={{ y: [0, 25, 0], x: [0, -10, 0], opacity: [0.4, 0.8, 0.4] }} transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}>
-          <span>Solana</span> <span style={{ color: '#00f5ff' }}>+8.5%</span>
-        </motion.div>
-        <motion.div className="orbital-element orb-4 glass-card" animate={{ y: [0, -20, 0], x: [0, 15, 0], opacity: [0.3, 0.7, 0.3] }} transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}>
-          <span>Cardano</span> <span style={{ color: '#ff4d6d' }}>-2.1%</span>
-        </motion.div>
-        <motion.div className="orbital-element orb-5 glass-card" animate={{ scale: [1, 1.1, 1], opacity: [0.5, 0.9, 0.5] }} transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 2 }}>
-          <span>BNB</span> <span style={{ color: '#00f5ff' }}>+1.2%</span>
-        </motion.div>
-
         <div className="hero-content">
           <motion.h1 className="hero-title" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
             <span className="title-purple">Sailing The Seas Of</span> <br />
@@ -87,18 +67,14 @@ const Home = () => {
           </motion.p>
 
           <motion.div className="search-orbit-container" initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.6, delay: 0.5 }}>
-            <form className="search-bar-cosmic glass-panel" onSubmit={searchHandler}>
+            <form className="search-bar-cosmic" onSubmit={searchHandler}>
               <FiSearch className="search-icon" />
               <input value={input} onChange={inputHandler} list="coinlist" placeholder="Search Tokens..." />
               <button type="button" className="filter-trigger" onClick={() => setShowFilters(!showFilters)}>
                 <FiFilter />
               </button>
             </form>
-            
-            {/* Added Search Helper Text */}
-            <p className="search-helper-text">
-              Search by coin name or symbol (e.g., Bitcoin, BTC)
-            </p>
+            <p className="search-helper-text">Search by coin name or symbol (e.g., Bitcoin, BTC)</p>
 
             {showFilters && (
               <motion.div className="cosmic-filters glass-card" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
@@ -111,14 +87,13 @@ const Home = () => {
         </div>
       </section>
 
-      {/* MARKET DATA SECTION */}
+      {/* MARKET TABLE SECTION */}
       <section className="market-section">
         <div className="section-header">
           <h2>Market Overview</h2>
           <div className="market-actions">
             <div className="live-indicator">
-              <span className="dot-pulse"></span>
-              Live Updates
+              <span className="dot-pulse"></span> Live Updates
             </div>
             <MarketFilters />
           </div>
@@ -134,46 +109,44 @@ const Home = () => {
           </div>
 
           <div className="table-body">
-            {displayCoin && displayCoin.length > 0 ? (
-              <Virtuoso
-                useWindowScroll
-                data={paginatedCoins}
-                itemContent={(index, item) => (
-                  <Link to={`/coin/${item.id}`} className="table-row" key={item.id}>
-                    <div className="col-rank">{item.market_cap_rank}</div>
-                    <div className="col-name">
-                      <img src={item.image} alt={item.name} className="coin-icon" />
-                      <div className="coin-info">
-                        <span className="coin-symbol">{item.symbol.toUpperCase()}</span>
-                        <span className="coin-fullname">{item.name}</span>
-                      </div>
+            {paginatedCoins.length > 0 ? (
+              paginatedCoins.map((item) => (
+                <Link to={`/coin/${item.id}`} className="table-row" key={item.id}>
+                  <div className="col-rank">{item.market_cap_rank}</div>
+                  <div className="col-name">
+                    <img src={item.image} alt="" className="coin-icon" />
+                    <div className="coin-info">
+                      <span className="coin-symbol">{item.symbol.toUpperCase()}</span>
+                      <span className="coin-fullname">{item.name}</span>
                     </div>
-                    <div className="col-price">{currency.Symbol || currency.symbol}{item.current_price.toLocaleString()}</div>
-                    <div className={`col-change ${item.price_change_percentage_24h > 0 ? "positive" : "negative"}`}>
-                      {item.price_change_percentage_24h > 0 ? <FiArrowUpRight /> : <FiArrowDownRight />}
-                      {Math.abs(item.price_change_percentage_24h).toFixed(2)}%
-                    </div>
-                    <div className="col-mcap">{currency.Symbol || currency.symbol}{item.market_cap.toLocaleString()}</div>
-                  </Link>
-                )}
-              />
+                  </div>
+                  <div className="col-price">
+                    {currency.Symbol || currency.symbol}{item.current_price.toLocaleString()}
+                  </div>
+                  <div className={`col-change ${item.price_change_percentage_24h > 0 ? "positive" : "negative"}`}>
+                    {item.price_change_percentage_24h > 0 ? <FiArrowUpRight /> : <FiArrowDownRight />}
+                    {Math.abs(item.price_change_percentage_24h).toFixed(2)}%
+                  </div>
+                  <div className="col-mcap">
+                    {currency.Symbol || currency.symbol}{item.market_cap.toLocaleString()}
+                  </div>
+                </Link>
+              ))
             ) : (
-              <div style={{ padding: '40px', textAlign: 'center', color: '#fff' }}>
-                {allCoin && allCoin.length === 0 ? 'Loading crypto data...' : 'No coins found.'}
-              </div>
+              <div className="no-data">No coins found.</div>
             )}
           </div>
           
           <div className="pagination">
-            <button className="btn-neon-purple" disabled={currentPage === 1} onClick={() => setCurrentPage((p) => p - 1)}>Prev</button>
-            <span>Page {currentPage} / {totalPages}</span>
-            <button className="btn-neon-purple" disabled={currentPage === totalPages || totalPages === 0} onClick={() => setCurrentPage((p) => p + 1)}>Next</button>
+            <button className="btn-neon-purple" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)}>Prev</button>
+            <span className="page-info">Page {currentPage} of {totalPages || 1}</span>
+            <button className="btn-neon-purple" disabled={currentPage === totalPages || totalPages === 0} onClick={() => setCurrentPage(p => p + 1)}>Next</button>
           </div>
         </div>
       </section>
 
       <datalist id="coinlist">
-        {allCoin?.map((c, i) => (
+        {allCoin?.slice(0, 10).map((c, i) => (
           <option key={i} value={c.name} />
         ))}
       </datalist>
