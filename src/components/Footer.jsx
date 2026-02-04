@@ -17,32 +17,24 @@ import { FiSend } from 'react-icons/fi';
 
 const Footer = () => {
   const [email, setEmail] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [status, setStatus] = useState('');
+  const [status, setStatus] = useState(null); // "success" | "error" | null
 
   const currentYear = new Date().getFullYear();
 
-  const isValidEmail = (value) =>
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-
-  const handleSubscribe = async (e) => {
+  const handleNewsletterSubmit = (e) => {
     e.preventDefault();
 
-    if (!isValidEmail(email)) {
-      setStatus('Please enter a valid email address');
+    // Simple validation check
+    if (!email || !email.includes("@")) {
+      setStatus("error");
+      setTimeout(() => setStatus(null), 3000); // Clear error after 3s
       return;
     }
 
-    setIsSubmitting(true);
-    setStatus('Subscribing...');
-
-    // Simulated API call
-    setTimeout(() => {
-      setStatus('Successfully subscribed to CryptoHub Insights!');
-      setEmail('');
-      setIsSubmitting(false);
-      setTimeout(() => setStatus(''), 3000);
-    }, 1500);
+    // UX-only logic for now
+    setStatus("success");
+    setEmail("");
+    setTimeout(() => setStatus(null), 5000); // Clear success message after 5s
   };
 
   return (
@@ -52,7 +44,7 @@ const Footer = () => {
         {/* Main Grid */}
         <div className="footer-main">
 
-          {/* Brand */}
+          {/* Brand & Payments */}
           <div className="footer-brand">
             <h2 className="footer-logo">
               Crypto<span>Hub</span>.
@@ -71,7 +63,7 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Markets */}
+          {/* Markets Column */}
           <div className="footer-links">
             <h4>Markets</h4>
             <ul>
@@ -82,7 +74,7 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Product */}
+          {/* Product Column */}
           <div className="footer-links">
             <h4>Product</h4>
             <ul>
@@ -90,45 +82,41 @@ const Footer = () => {
               <li><Link to="/pricing">Pricing</Link></li>
               <li><Link to="/portfolio">Portfolio</Link></li>
               <li><Link to="/api">API Access</Link></li>
+              <li><Link to="/contact">Feedback</Link></li>
             </ul>
           </div>
-          
 
-          {/* Newsletter */}
+          {/* Updated Newsletter Form */}
           <div className="footer-newsletter">
             <h4>Newsletter</h4>
             <p>Weekly crypto insights & market updates</p>
 
-            <form onSubmit={handleSubscribe}>
-              <input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                disabled={isSubmitting}
-                aria-label="Email address"
-                required
-              />
-              <button
-                type="submit"
-                disabled={isSubmitting || !email}
-                aria-label="Subscribe"
-              >
-                {isSubmitting ? '...' : <FiSend />}
-              </button>
-            </form>
+            <form onSubmit={handleNewsletterSubmit}>
+              <div className="newsletter-input-group">
+                <input
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  aria-label="Email address"
+                />
+                <button type="submit" aria-label="Subscribe">
+                  <FiSend />
+                </button>
+              </div>
 
-            {status && (
-              <p className={`status-message ${status.includes('Success') ? 'success' : 'error'}`}>
-                {status}
-              </p>
-            )}
+              {status === "success" && (
+                <p className="newsletter-msg success">Thanks for subscribing!</p>
+              )}
+              {status === "error" && (
+                <p className="newsletter-msg error">Please enter a valid email.</p>
+              )}
+            </form>
           </div>
         </div>
 
-        {/* Bottom */}
+        {/* Socials & Copyright */}
         <div className="footer-bottom-section">
-
           <div className="social-links">
             <a href="https://twitter.com" target="_blank" rel="noopener noreferrer"><FaTwitter /></a>
             <a href="https://instagram.com" target="_blank" rel="noopener noreferrer"><FaInstagram /></a>
@@ -141,11 +129,10 @@ const Footer = () => {
             <p>
               <Link to="/privacy">Privacy Policy</Link> |{" "}
               <Link to="/terms">Terms of Service</Link> |{" "}
-              <Link to="/cookies">Cookies</Link>|{" "}
+              <Link to="/cookies">Cookies</Link>
             </p>
             <p>© {currentYear} CryptoHub. All rights reserved.</p>
           </div>
-
         </div>
       </div>
     </footer>
