@@ -143,6 +143,17 @@ export const formatMarketCap = (marketCap, currency = 'USD') => {
   return `${symbol}${formatted}`;
 };
 
+export const formatMarketCap = (value) => {
+  if (value === null || value === undefined) return "—";
+  const num = Number(value);
+  if (Number.isNaN(num)) return "—";
+
+  if (num >= 1e12) return `$${(num / 1e12).toFixed(1)}T`;
+  if (num >= 1e9) return `$${(num / 1e9).toFixed(1)}B`;
+  if (num >= 1e6) return `$${(num / 1e6).toFixed(1)}M`;
+  return `$${num.toLocaleString()}`;
+};
+
 /**
  * Formats volume
  * @param {number} volume - Trading volume
