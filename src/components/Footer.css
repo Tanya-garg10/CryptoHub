@@ -347,3 +347,16 @@ button:hover{
     height: 24px;
   }
 }
+
+.newsletter-msg{
+  margin-top: 8px;
+  font-size: 12px;
+}
+
+.newsletter-msg.success{
+  color: #22c55e;
+}
+
+.newsletter-msg.error{
+  color: #ef4444;
+}
