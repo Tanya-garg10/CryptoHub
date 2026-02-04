@@ -7,3 +7,8 @@
   padding-right: 0;
   box-sizing: border-box;
 }
+.market-source{
+  font-size: 12px;
+  opacity: 0.75;
+  margin-top: 6px;
+}
