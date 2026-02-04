@@ -1,150 +1,175 @@
-/* src/pages/Home/Home.css - Full Structure Fix */
+/* src/pages/Home/Home.css - Structural Fix */
 
 .home-container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 5%;
-    position: relative;
-    overflow: hidden;
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 20px;
+  color: #fff;
 }
 
-/* --- Hero Section Fix --- */
+/* --- Hero Section --- */
 .cosmic-hero {
-    min-height: 75vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    text-align: center;
-    gap: 20px;
-    background: transparent;
+  padding: 100px 0 60px;
+  text-align: center;
+  position: relative;
 }
 
 .hero-title {
-    font-size: clamp(2.5rem, 6vw, 4.5rem);
-    font-weight: 800;
-    line-height: 1.1;
-    margin-bottom: 0.5em;
-    z-index: 2;
+  font-size: 4rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 20px;
 }
 
-.title-purple {
-    background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+.title-purple { color: #a855f7; }
+.title-cyan { color: #22d3ee; }
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  color: #94a3b8;
+  margin-bottom: 40px;
 }
 
-.title-cyan {
-    background: linear-gradient(135deg, #06b6d4 0%, #00f5ff 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-/* --- Search Bar Fix (Last images wala style) --- */
+/* --- Search Bar Fix --- */
 .search-orbit-container {
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
-    z-index: 5;
+  max-width: 600px;
+  margin: 0 auto 30px;
 }
 
 .search-bar-cosmic {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 12px 25px;
-    border-radius: 50px;
-    background: rgba(15, 23, 42, 0.6);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  background: rgba(30, 41, 59, 0.7);
+  backdrop-filter: blur(10px);
+  padding: 12px 20px;
+  border-radius: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .search-bar-cosmic input {
-    flex: 1;
-    background: transparent;
-    border: none;
-    outline: none;
-    color: #fff;
-    font-size: 1rem;
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: white;
+  padding: 0 15px;
+  outline: none;
+}
+
+.search-helper-text {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-top: 10px;
 }
 
 /* --- Market Overview Table Fix --- */
 .market-section {
-    padding: 60px 0;
+  margin-top: 50px;
 }
 
-.crypto-table {
-    background: rgba(15, 23, 42, 0.4);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    overflow: hidden;
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.glass-panel {
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(15px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+}
+
+/* --- Table Grid Logic --- */
+.table-header, .table-row {
+  display: grid;
+  /* Columns: Rank, Asset, Price, Change, M-Cap */
+  grid-template-columns: 0.5fr 2.5fr 1.5fr 1.2fr 2fr;
+  align-items: center;
+  padding: 20px 30px;
 }
 
 .table-header {
-    display: grid;
-    grid-template-columns: 0.5fr 2fr 1.5fr 1.2fr 1.8fr;
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.03);
-    font-weight: 600;
-    color: #94a3b8;
-    text-transform: uppercase;
-    font-size: 0.85rem;
+  background: rgba(255, 255, 255, 0.03);
+  color: #94a3b8;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .table-row {
-    display: grid;
-    grid-template-columns: 0.5fr 2fr 1.5fr 1.2fr 1.8fr;
-    padding: 20px;
-    align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    transition: background 0.3s ease;
+  text-decoration: none;
+  color: inherit;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  transition: background 0.2s;
 }
 
 .table-row:hover {
-    background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.02);
 }
 
-.coin-info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+/* --- Column Content Styling --- */
+.col-name {
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
 .coin-icon {
-    width: 32px;
-    height: 32px;
+  width: 32px;
+  height: 32px;
 }
 
-/* --- Color Helpers --- */
-.positive { color: #10b981; }
-.negative { color: #ef4444; }
+.coin-info {
+  display: flex;
+  flex-direction: column;
+}
 
-/* --- Pagination Fix --- */
+.coin-symbol {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.coin-fullname {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.positive { color: #10b981; display: flex; align-items: center; gap: 4px; }
+.negative { color: #ef4444; display: flex; align-items: center; gap: 4px; }
+
+/* --- Pagination --- */
 .pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-    padding: 40px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding: 30px;
 }
 
-.btn-pagination {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #fff;
-    padding: 8px 24px;
-    border-radius: 8px;
-    cursor: pointer;
+.btn-neon-purple {
+  background: #7c3aed;
+  color: white;
+  border: none;
+  padding: 8px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
 }
 
-/* --- Responsive Fix --- */
+.btn-neon-purple:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Responsive Fix */
 @media (max-width: 768px) {
-    .table-header, .table-row {
-        grid-template-columns: 0.5fr 2fr 1.2fr 1fr;
-    }
-    .col-mcap { display: none; }
-    .hero-title { font-size: 2.8rem; }
+  .table-header, .table-row {
+    grid-template-columns: 0.5fr 2fr 1.5fr 1fr;
+    padding: 15px;
+  }
+  .col-mcap { display: none; }
+  .hero-title { font-size: 2.5rem; }
 }
