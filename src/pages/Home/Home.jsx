@@ -73,6 +73,7 @@ const Home = () => {
   }, [observerTarget, visibleCount, displayCoin, input]);
 
   useEffect(() => {
+    setCurrentPage(1)
     setDisplayCoin(filteredCoins);
   }, [filteredCoins]);
 

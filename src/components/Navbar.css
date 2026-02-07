@@ -53,6 +53,10 @@
   list-style: none;
 }
 
+.navbar-item:hover {
+  z-index: 100;
+}
+
 .navbar-link {
   color: rgba(255, 255, 255, 0.5);
   text-decoration: none;

@@ -12,8 +12,23 @@ function Navbar() {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState(null);
+ 
 
   const isDashboardPage = location.pathname === "/dashboard";
+
+  const handleDropdownEnter = (label) => {
+  setOpenDropdown(label);
+  };
+
+  const handleDropdownLeave = () => {
+    setOpenDropdown(null);
+    };
+
+  const handleDropdownClick = (label) => {
+    setOpenDropdown(openDropdown === label ? null : label);
+  };
+
 
   // Handle scroll effect for navbar
   useEffect(() => {
@@ -23,6 +38,29 @@ function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (openDropdown && !event.target.closest('.navbar-item')) {
+        setOpenDropdown(null);
+      }
+    };
+
+    const handleEscapeKey = (event) => {
+      if (event.key === 'Escape' && openDropdown) {
+        setOpenDropdown(null);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    document.addEventListener('keydown', handleEscapeKey);
+    
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener('keydown', handleEscapeKey);
+    };
+  }, [openDropdown]);
 
   const handleLogout = useCallback(async () => {
     try {
@@ -40,6 +78,7 @@ function Navbar() {
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
+    setOpenDropdown(null);
   };
 
   const navLinks = [
@@ -47,7 +86,15 @@ function Navbar() {
     { to: "/pricing", label: "Pricing" },
     { to: "/blog", label: "Insights" },
     { to: "/features", label: "Features" },
+    {
+      label: "More",
+      dropdown:[
     { to: "/contributors", label: "Contributors" },
+    { to: "/contactus", label: "Contact Us" },
+    { to: "/faq", label: "FAQ" },
+      ],
+    }
+    
   ];
 
   return (

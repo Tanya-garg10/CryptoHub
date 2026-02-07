@@ -26,8 +26,13 @@ import { CoinContext } from "@/context/CoinContext";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { Toaster } from "react-hot-toast";
 import ScrollToTop from "@/components/ScrollToTop";
-import PrivacyPolicy from "@/pages/PrivacyPolicy.jsx";
-import TermsConditions from "@/pages/TermsConditions.jsx";
+import PrivacyPolicy from "@/components/PrivacyPolicy.jsx";
+import TermsOfService from "@/components/TermsOfService.jsx";
+import CookiePolicy from "@/components/CookiePolicy.jsx";
+import "./App.css";
+import ContactUs from "./components/ContactUs";
+import FAQ from "./components/FAQ";
+import PageNotFound from "./components/PageNotFound";
 
 const App = () => {
   const { isLoading } = useContext(CoinContext);
@@ -44,8 +49,10 @@ const App = () => {
   const isDashboard = location.pathname === "/dashboard" ||
     location.pathname === "/leaderboard" ||
     location.pathname === "/market-overview" ||
-    location.pathname === "/change-password" ||
-    location.pathname.startsWith("/coin/");
+    location.pathname === "/change-password" ;
+
+  const authRoutes = ["/login", "/signup", "/forgot-password"];
+  const isAuthPage = authRoutes.includes(location.pathname);
 
   useEffect(() => {
     AOS.init({
@@ -102,19 +109,10 @@ const App = () => {
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/contributors" element={<Contributors />} />
 
-              {/* Dashboard Layout with nested routes - all share the same sidebar */}
-              <Route element={
-                <PrivateRoute>
-                  <DashboardLayout />
-                </PrivateRoute>
-              }>
-                <Route path="/dashboard" element={<DashboardContent />} />
-                <Route path="/market-overview" element={<MarketOverview />} />
-                <Route path="/leaderboard" element={<Leaderboard />} />
-                <Route path="/change-password" element={<ChangePassword />} />
                 <Route path="/privacy" element={<PrivacyPolicy />} />
-                <Route path="/terms" element={<TermsConditions />} />
-              </Route>
+                <Route path="/terms" element={<TermsOfService />} />
+                <Route path="/contactus" element={<ContactUs />} />
+                <Route path="/faq" element={<FAQ />} />
 
               {/* Coin route - accessible to all but shows sidebar if logged in */}
               <Route path="/coin/:coinId" element={<CoinWrapper />} />
@@ -122,11 +120,12 @@ const App = () => {
               {/* Add 404 Route if you implemented it earlier */}
               {/* <Route path="*" element={<NotFound />} /> */}
 
-              <Route path="/privacy" element={<PrivacyPolicy />} />
 
 
-            </Routes>
-            {!isDashboard && <Footer />}
+                <Route path="/cookies" element={<CookiePolicy />} />
+              </Routes>
+            </div>
+           {!isDashboard && !isAuthPage && <Footer />}
           </div>
           <ScrollToTop />
         </AuthProvider>
