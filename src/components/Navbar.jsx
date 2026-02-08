@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../context/AuthContext";
-import { useTheme } from "../context/ThemeContext";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FiLock } from "react-icons/fi";
 import "./Navbar.css";
 
 function Navbar() {
   const { currentUser, logout, isEmailProvider } = useAuth();
-  const { theme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -22,8 +20,9 @@ function Navbar() {
   };
 
   const handleDropdownLeave = () => {
-    setOpenDropdown(null);
-    };
+  setTimeout(() => setOpenDropdown(null), 100); 
+};
+
 
   const handleDropdownClick = (label) => {
     setOpenDropdown(openDropdown === label ? null : label);
@@ -106,13 +105,31 @@ function Navbar() {
           <span>CryptoHub</span>
         </Link>
 
-        {/* Centered Menu */}
-        <ul className="navbar-menu">
-          {navLinks.map((link) => (
-            <li key={link.to} className="navbar-item">
-              <Link
-                to={link.to}
-                className={`navbar-link ${location.pathname === link.to ? "active" : ""}`}
+        {/* Desktop Navigation Menu */}
+        {!isDashboardPage && (
+    <ul className="navbar-menu">
+      {(currentUser ? authenticatedNavLinks : navLinks).map((link) => (
+        <li
+          key={link.label}
+          className="navbar-item dropdown-container"
+          onMouseEnter={() => link.dropdown && handleDropdownEnter(link.label)}
+          onMouseLeave={handleDropdownLeave}
+        >
+          {link.dropdown ? (
+            <>
+              <span 
+                className="navbar-link dropdown-trigger"
+                onClick={() => handleDropdownClick(link.label)}
+                role="button"
+                aria-expanded={openDropdown === link.label}
+                aria-haspopup="true"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleDropdownClick(link.label);
+                  }
+                }}
               >
                 {link.label}
               </Link>
